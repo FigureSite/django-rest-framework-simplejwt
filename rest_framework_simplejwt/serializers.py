@@ -30,8 +30,13 @@ class TokenObtainSerializer(serializers.Serializer):
         self.fields['password'] = PasswordField()
 
     def validate(self, attrs):
+        u = User.objects.filter(email__iexact=attrs[self.username_field]).first()
+        username = attrs[self.username_field]
+        if u:
+            username = u.username
+        print("VALIDATE")
         self.user = authenticate(**{
-            self.username_field: attrs[self.username_field],
+            self.username_field: username,
             'password': attrs['password'],
         })
 
